@@ -5,7 +5,7 @@ from utils.plotters import eigenvalues, subspace_errors, eigenvectors, sufficien
 from utils.response_surfaces import GaussianProcess
 from subspaces import Subspaces
 from gradients import local_linear_gradients, finite_difference_gradients
-from domains import UnboundedActiveVariableDomain, BoundedActiveVariableDomain
+from domains import UnboundedActiveVariableDomain, BoundedActiveVariableDomain, BoundedActiveVariableMap
 from as_integrals import as_integrate
 from as_optimizers import as_minimize, UnboundedMinVariableMap, BoundedMinVariableMap
 
@@ -83,8 +83,8 @@ class ActiveSubspaceModel():
     def set_response_surface(self):
         ss = self.subspaces
         Y = np.dot(self.X, ss.W1)
-        rs = GaussianProcess(e=ss.eigenvalues)
-        rs.train(Y, self.f)
+        rs = GaussianProcess()
+        rs.train(Y, self.f,e=ss.eigenvalues)
         self.rs = rs
 
     def predict(self, X, compvar=False, compgrad=False):
@@ -147,12 +147,17 @@ class ActiveSubspaceModel():
             return self.rs.predict(y.reshape((1, n)))[0]
             
         ystar, fval = as_minimize(av_fun, self.domain)
-        if self.bflag:
-            mvm = BoundedMinVariableMap()
-        else:
-            mvm = UnboundedMinVariableMap()
-        mvm.train(self.X, self.f)
-        return mvm.inverse(ystar), fval
+        #if self.bflag:
+            #mvm = BoundedMinVariableMap(self.subspaces)
+        #else:
+            #mvm = UnboundedMinVariableMap(self.subspaces)
+        #mvm.train(self.X, self.f)
+        #return mvm.inverse(ystar), fval
+        
+        avm = BoundedActiveVariableMap(self.subspaces)
+        return avm.inverse(ystar,N=10), fval
+        
+        
         
     def __call__(self,x):
         return self.predict(x)[0]

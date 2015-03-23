@@ -34,6 +34,7 @@ class BoundedMinVariableMap(MinVariableMap):
     def regularize_z(self, Y, N=1):
         W1, W2 = self.W1, self.W2
         m, n = W1.shape
+        Y = np.atleast_2d(Y)
         NY = Y.shape[0]
 
         Zlist = []

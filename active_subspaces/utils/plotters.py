@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-def plot_opts(savefigs=True, figtype='eps'):
+def plot_opts(savefigs=True, figtype='.png'):
     # make figs directory
     if savefigs:
         if not os.path.isdir('figs'):
@@ -27,7 +27,7 @@ def eigenvalues(e, e_br=None, out_label=None, opts=None):
         out_label = 'Output'
 
     plt.figure()
-    plt.rc('font', **opts['myfont'])
+    #plt.rc('font', **opts['myfont'])
     plt.semilogy(range(1 ,k+1), e, 'ko-')
     if e_br is not None:
         plt.fill_between(range(1, k+1), e_br[:,0], e_br[:,1],
@@ -38,13 +38,14 @@ def eigenvalues(e, e_br=None, out_label=None, opts=None):
     plt.grid(True)
     plt.xticks(range(1, k+1))
     if e_br is None:
-        plt.axis([1, k, np.amin(e), np.amax(e)])
+        plt.axis([1, 12, np.amin(e), np.amax(e)])
     else:
-        plt.axis([1, k, np.amin(e_br[:,0]), np.amax(e_br[:,1])])
+        plt.axis([1, 12, np.amin(e_br[:12,0]), np.amax(e_br[:12,1])])
     figname = 'figs/evals_' + out_label + opts['figtype']
+    plt.draw()
     if opts['savefigs']:
-        plt.savefig(figname, dpi=300, bbox_inches='tight', pad_inches=0.0)
-    plt.show()
+        plt.savefig(figname, dpi=300) #, bbox_inches='tight', pad_inches=0.0)
+    
 
 def subspace_errors(sub_br ,out_label=None, opts=None):
 
@@ -56,7 +57,7 @@ def subspace_errors(sub_br ,out_label=None, opts=None):
         out_label = 'Output'
 
     plt.figure()
-    plt.rc('font', **opts['myfont'])
+    #plt.rc('font', **opts['myfont'])
     plt.semilogy(range(1, kk+1), sub_br[:,1], 'ko-', markersize=12)
     plt.fill_between(range(1, kk+1), sub_br[:,0], sub_br[:,2],
         facecolor='0.7', interpolate=True)
@@ -66,9 +67,10 @@ def subspace_errors(sub_br ,out_label=None, opts=None):
     plt.xticks(range(1, kk+1))
     plt.axis([1, kk, np.amin(sub_br[:,0]), 1])
     figname = 'figs/subspace_' + out_label + opts['figtype']
+    plt.draw()
     if opts['savefigs']:
-        plt.savefig(figname, dpi=300, bbox_inches='tight', pad_inches=0.0)
-    plt.show()
+        plt.savefig(figname, dpi=300) #, bbox_inches='tight', pad_inches=0.0)
+    #plt.show()
 
 def eigenvectors(W, W_boot=None, in_labels=None, out_label=None, opts=None):
 
@@ -85,7 +87,7 @@ def eigenvectors(W, W_boot=None, in_labels=None, out_label=None, opts=None):
 
     if n==1:
         plt.figure()
-        plt.rc('font', **opts['myfont'])
+        #plt.rc('font', **opts['myfont'])
         if W_boot is not None:
             plt.plot(range(1 ,m+1), W_boot, color='0.7')
         plt.plot(range(1, m+1), W, 'ko-', markersize=12)
@@ -97,11 +99,12 @@ def eigenvectors(W, W_boot=None, in_labels=None, out_label=None, opts=None):
             plt.subplots_adjust(bottom=0.15)
         plt.axis([1, m, -1, 1])
         figname = 'figs/evecs_' + out_label + opts['figtype']
+        plt.draw()
         if opts['savefigs']:
-            plt.savefig(figname, dpi=300, bbox_inches='tight', pad_inches=0.0)
+            plt.savefig(figname, dpi=300) #, bbox_inches='tight', pad_inches=0.0)
     else:
         plt.figure()
-        plt.rc('font', **opts['myfont'])
+        #plt.rc('font', **opts['myfont'])
         for k in range(np.minimum(3, W.shape[1])):
             plt.plot(range(1, m+1), W[:,k], 'o-', markersize=12, label='%d' % k)
         plt.ylabel('Eigenvectors')
@@ -113,10 +116,11 @@ def eigenvectors(W, W_boot=None, in_labels=None, out_label=None, opts=None):
         plt.axis([1, m, -1, 1])
         plt.legend(loc='best')
         figname = 'figs/evecs_' + out_label + opts['figtype']
+        plt.draw()
         if opts['savefigs']:
-            plt.savefig(figname, dpi=300, bbox_inches='tight', pad_inches=0.0)
+            plt.savefig(figname, dpi=300) #, bbox_inches='tight', pad_inches=0.0)
 
-    plt.show()
+    #plt.show()
 
 def sufficient_summary(y, f, out_label=None, opts=None):
 
@@ -130,20 +134,25 @@ def sufficient_summary(y, f, out_label=None, opts=None):
     else:
         y1 = y[:,0]
         y2 = y[:,1]
+        
+        #y1 = np.sin(-45./np.pi*180.) * y[:,0] + np.cos(-45./np.pi*180.) * y[:,1]
+        #y2 = np.cos(-45./np.pi*180.) * y[:,0] - np.sin(-45./np.pi*180.) * y[:,1]
+        
 
     # set labels for plots
     if out_label is None:
         out_label = 'Output'
 
     plt.figure()
-    plt.rc('font', **opts['myfont'])
+    #plt.rc('font', **opts['myfont'])
     plt.plot(y1, f, 'bo', markersize=12)
     plt.xlabel('Active variable')
     plt.ylabel(out_label)
     plt.grid(True)
     figname = 'figs/ssp1_' + out_label + opts['figtype']
+    plt.draw()
     if opts['savefigs']:
-        plt.savefig(figname, dpi=300, bbox_inches='tight', pad_inches=0.0)
+        plt.savefig(figname, dpi=300) #, bbox_inches='tight', pad_inches=0.0)
 
     if n==2:
 
@@ -155,7 +164,8 @@ def sufficient_summary(y, f, out_label=None, opts=None):
         plt.title(out_label)
         plt.colorbar()
         figname = 'figs/ssp2_' + out_label + opts['figtype']
+        plt.draw()
         if opts['savefigs']:
-            plt.savefig(figname, dpi=300, bbox_inches='tight', pad_inches=0.0)
+            plt.savefig(figname, dpi=300) #, bbox_inches='tight', pad_inches=0.0)
 
-    plt.show()
+    #plt.show()

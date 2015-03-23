@@ -51,6 +51,7 @@ class ActiveVariableMap():
     def inverse(self, Y, N=1):
         Z = self.regularize_z(Y, N)
         W = np.hstack((self.W1, self.W2))
+	Y = np.atleast_2d(Y)
         return rotate_x(Y, Z, W)
 
     def regularize_z(self, Y, N):
@@ -64,6 +65,7 @@ class BoundedActiveVariableMap(ActiveVariableMap):
 
         # sample the z's
         # TODO: preallocate and organize properly
+	Y = np.atleast_2d(Y)
         NY = Y.shape[0]
         Zlist = []
         for y in Y:
@@ -138,7 +140,7 @@ def sample_z(N, y, W1, W2):
         z0 = np.dot(W2.T, x0).reshape((m-n, 1))
 
     # get MCMC step size
-    sig = 0.1*np.maximum(
+    sig = 0.001*np.maximum(
             np.linalg.norm(np.dot(W2, z0) + s - 1),
             np.linalg.norm(np.dot(W2, z0) + s + 1))
 
